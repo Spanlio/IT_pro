@@ -10,7 +10,7 @@ if ($savienojums->connect_error) {
 }
 
 session_start();
-if (!isset($_SESSION["lietotajvards_divisaldie"])) {
+if (!isset($_SESSION["lietotajvards_divisaldie"]) && $_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(401); // Unauthorized
     echo json_encode(["error" => "Nepieciešama autorizācija"]);
     exit;
