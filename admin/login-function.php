@@ -7,7 +7,7 @@ if (isset($_POST['ielogoties'])) {
     $lietotajvards = $_POST['lietotajs'];
     $parole = $_POST['parole'];
 
-    $sql = $savienojums->prepare("SELECT lietotajvards, parole, loma, statuss FROM IT_lietotaji WHERE lietotajvards = ? LIMIT 1");
+    $sql = $savienojums->prepare("SELECT lietotajvards, parole, loma, statuss, lietotajs_id FROM IT_lietotaji WHERE lietotajvards = ? LIMIT 1");
     $sql->bind_param("s", $lietotajvards);
     $sql->execute();
 
@@ -18,6 +18,7 @@ if (isset($_POST['ielogoties'])) {
             if($lietotajs["statuss"] == 'aktivs'){
                 $_SESSION["lietotajvards_divisaldie"] = $lietotajs["lietotajvards"];
                 $_SESSION["lietotajs_loma"] = $lietotajs["loma"];
+                $_SESSION["lietotajs_id"] = $lietotajs["lietotajs_id"];
                 header("Location: sakums.php"); //pārvada lietotāju uz mājaslapu, ja viss sakrīt
                 exit;
             }else{
