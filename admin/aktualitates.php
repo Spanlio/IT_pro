@@ -15,7 +15,6 @@
             <th>Darbības</th>
         </tr>
     </thead>
-    <tbody id="table-body"></tbody>
+    <tbody id="aktualitates-table"></tbody>
 </table>
 
-<script src="aktualitates-admin.js"></script>

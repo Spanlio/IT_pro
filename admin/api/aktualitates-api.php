@@ -9,13 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id'])) {
         $id = intval($_GET['id']);
 
-        $stmt = $conn->prepare("SELECT * FROM aktualitates WHERE id = ?");
+        $stmt = $savienojums->prepare("SELECT * FROM IT_aktualitates WHERE id = ?");
         $stmt->execute([$id]);
         echo json_encode($stmt->fetch(PDO::FETCH_ASSOC));
         exit;
     }
 
     // GET ALL
-    $stmt = $conn->query("SELECT * FROM aktualitates ORDER BY id DESC");
+    $stmt = $savienojums->query("SELECT * FROM IT_aktualitates ORDER BY id DESC");
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
 }

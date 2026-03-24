@@ -17,6 +17,7 @@ if(!isset($_SESSION["lietotajvards_divisaldie"])){
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="shortcut icon" href="../images/logo.png" type="image/x-icon">
+    <script src="aktualitates-admin.js" defer></script>
     <script src="pieteikumi-script.js?v=0.1" defer></script>
     <script src="lietotaji-script.js?v=0.1" defer></script>
 </head>
