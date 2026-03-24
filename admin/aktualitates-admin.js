@@ -1,122 +1,133 @@
+console.log("aktualitates script darbojas!");
 
-// let tabula = document.querySelector("#aktualitates-table")
+let aktualitatesTabula = document.querySelector("#aktualitates");
 
-// console.log(tabula)
+if (!aktualitatesTabula) {
+    console.log("aktualitates script skipped");
+} else {
 
-// if (!tabula) {
-//     console.log("aktualitates script skipped");
-// } else {
+    let tbody = aktualitatesTabula.querySelector("tbody");
 
+    let edit = false;
 
+    // =====================
+    // LOAD DATA (like your other scripts)
+    // =====================
+    async function getAktualitates() {
+        let res = await fetch("api/aktualitates-api.php");
+        let data = await res.json();
 
-
-// sis ir prieks bilzu path db - ../images/imagename.png, ja izmanto jau esošo folderi
-
-
-if (document.querySelector("#aktualitates")) {
-
-
-
-    let tabulaAktualitates = document.querySelector("#aktualitates tbody");
-
-    fetch("api/aktualitates-api.php")
-        .then(res => res.json())
-        .then(data => {
-            renderTable(data);
-        });
-
-    function renderTable(data) {
         let html = "";
 
         data.forEach(a => {
             html += `
-        <tr>
-            <td>${a.virsraksts}</td>
-            
-            <td>
-                <img src="${a.attels ? a.attels : '../images/no-image.png'}"
-                style="width:80px; height:50px; object-fit:cover;">
-            </td>
+            <tr>
+                <td>${a.virsraksts}</td>
+                
+                <td>
+                    <img src="${a.attels ? a.attels : '../images/no-image.png'}"
+                         style="width:80px; height:50px; object-fit:cover;">
+                </td>
 
-            <td>${a.vards} ${a.uzvards}</td>
+                <td>${a.vards ? a.vards + " " + a.uzvards : "Nav autora"}</td>
 
-            <td>
-                <span class="${a.statuss === 'publicets' ? 'status-green' : 'status-gray'}">
-                    ${a.statuss}
-                </span>
-            </td>
+                <td>
+                    <span class="${a.statuss === 'publicets' ? 'status-green' : 'status-gray'}">
+                        ${a.statuss}
+                    </span>
+                </td>
 
-            <td>${formatDate(a.izveidots)}</td>
+                <td>${formatDate(a.izveidots)}</td>
 
-            <td>
-                <button class="fa fa-edit btn-edit" onclick="editAktualitate(${a.id})"></button>
-                <button class="fa fa-trash btn-delete" onclick="deleteAktualitate(${a.id})"></button>
-            </td>
-        </tr>
-        `;
+                <td>
+                    <button class="fa fa-edit btn-edit" onclick="editAktualitate(${a.id})"></button>
+                    <button class="fa fa-trash btn-delete" onclick="deleteAktualitate(${a.id})"></button>
+                </td>
+            </tr>
+            `;
         });
 
-        tabulaAktualitates.innerHTML = html;
+        tbody.innerHTML = html;
     }
 
+    // =====================
+    // DATE
+    // =====================
     function formatDate(date) {
         let d = new Date(date);
         return d.toLocaleString("lv-LV");
     }
 
+    // =====================
+    // EDIT
+    // =====================
+    window.editAktualitate = async function (id) {
+        let res = await fetch("api/aktualitates-api.php?id=" + id);
+        let aktualitate = await res.json();
 
-    function editAktualitate(id) {
-        fetch("api/aktualitates-api.php?id=" + id)
-            .then(res => res.json())
-            .then(aktualitate => {
+        edit = true;
 
-                document.querySelector("#aktualitate_id").value = aktualitate.id;
+        document.querySelector("#aktualitate_id").value = aktualitate.id;
+        document.querySelector("#virsraksts").value = aktualitate.virsraksts;
+        document.querySelector("#iss_apraksts").value = aktualitate.iss_apraksts;
+        document.querySelector("#pilns_apraksts").value = aktualitate.pilns_apraksts;
+        document.querySelector("#attels").value = aktualitate.attels;
+        document.querySelector("#statuss").value = aktualitate.statuss;
 
-                document.querySelector("#virsraksts").value = aktualitate.virsraksts;
-                document.querySelector("#iss_apraksts").value = aktualitate.iss_apraksts;
-                document.querySelector("#pilns_apraksts").value = aktualitate.pilns_apraksts;
-                document.querySelector("#attels").value = aktualitate.attels;
-                document.querySelector("#statuss").value = aktualitate.statuss;
-
-                showModal();
-            });
+        showModal();
     }
-    // aktualitates dzesana
-    function deleteAktualitate(id) {
-        if (!confirm("Vai tiešām dzēst šo aktualitāti?")) return;
 
-        fetch("api/aktualitates-api.php", {
+    // =====================
+    // DELETE
+    // =====================
+    window.deleteAktualitate = async function (id) {
+        let deleteId = null;
+
+        // open modal
+        window.deleteAktualitate = function (id) {
+            deleteId = id;
+
+            document.querySelector("#delete-modal").style.display = "flex";
+        };
+
+        await fetch("api/aktualitates-api.php", {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ id: id })
-        })
-            .then(res => res.json())
-            .then(res => {
-                console.log(res);
-                location.reload();
-            });
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id })
+        });
+
+        getAktualitates(); // 🔥 like your scripts (refresh table only)
     }
 
-    let editMode = false;
-    let currentId = null;
+    // delete accept
 
-    // modal show
-    document.querySelector("#new-btn")?.addEventListener("click", showModal);
-    // modal hide
-    document.querySelector(".close-modal")?.addEventListener("click", hideModal);
+    document.querySelector("#confirm-delete").addEventListener("click", async () => {
 
-    function showModal() {
-        document.querySelector(".modal").style.display = "flex";
-    }
+        if (!deleteId) return;
 
-    function hideModal() {
-        document.querySelector(".modal").style.display = "none";
-    }
+        await fetch("api/aktualitates-api.php", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: deleteId })
+        });
 
-    // aktualitates redigesana
-    document.querySelector("#aktualitatesForma").addEventListener("submit", function (e) {
+        document.querySelector("#delete-modal").style.display = "none";
+
+        deleteId = null;
+
+        getAktualitates(); // refresh table
+    });
+
+
+    document.querySelector("#cancel-delete").addEventListener("click", () => {
+        document.querySelector("#delete-modal").style.display = "none";
+        deleteId = null;
+    });
+
+    // =====================
+    // SAVE
+    // =====================
+    document.querySelector("#aktualitatesForma").addEventListener("submit", async function (e) {
         e.preventDefault();
 
         let aktualitate = {
@@ -128,20 +139,47 @@ if (document.querySelector("#aktualitates")) {
             statuss: document.querySelector("#statuss").value
         };
 
-        console.log("SAVING:", aktualitate);
-
-        fetch("api/aktualitates-api.php", {
+        await fetch("api/aktualitates-api.php", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(aktualitate)
-        })
-            .then(res => res.json())
-            .then(res => {
-                console.log("RESPONSE:", res);
-                location.reload();
-            });
-    });
-}
+        });
 
+        hideModal();
+        this.reset();
+
+        getAktualitates(); // 🔥 same pattern
+    });
+
+    // =====================
+    // MODAL
+    // =====================
+    document.querySelector("#new-btn")?.addEventListener("click", () => {
+        edit = false;
+        document.querySelector("#aktualitatesForma").reset();
+        document.querySelector("#aktualitate_id").value = "";
+        showModal();
+    });
+
+    document.querySelector(".close-modal")?.addEventListener("click", hideModal);
+
+    function showModal() {
+        let modal = document.querySelector("#aktualitates-modal");
+
+        if (!modal) {
+            console.error("Modalais edit aktualitates logs not found!");
+            return;
+        }
+
+        modal.style.display = "flex";
+    }
+
+    function hideModal() {
+        document.querySelector("#aktualitates-modal").style.display = "none";
+    }
+
+    // =====================
+    // INIT
+    // =====================
+    getAktualitates();
+}

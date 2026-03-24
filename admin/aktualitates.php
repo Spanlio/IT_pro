@@ -16,7 +16,7 @@
     <tbody></tbody>
 </table>
 
-<div class="modal">
+<div class="modal" id="aktualitates-modal">
     <div class="modal-box">
         <div class="close-modal" data-target="#modal-admin">
             <i class="fa-solid fa-square-xmark"></i>
@@ -53,5 +53,26 @@
             <button type="submit" class="btn active">Saglabāt</button>
 
         </form>
+    </div>
+</div>
+
+<div class="modal" id="delete-modal">
+    <div class="modal-box delete-box">
+
+        <div class="delete-icon">
+            ⚠️
+        </div>
+
+        <h3>Dzēst aktualitāti</h3>
+
+        <p id="delete-text">
+            Vai tiešām vēlies dzēst šo aktualitāti?
+        </p>
+
+        <div class="delete-actions">
+            <button id="confirm-delete" class="btn-delete-main">Jā, dzēst</button>
+            <button id="cancel-delete" class="btn-cancel">Atcelt</button>
+        </div>
+
     </div>
 </div>
