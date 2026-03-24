@@ -1,21 +1,26 @@
 <?php
 header("Content-Type: application/json; charset=UTF-8");
-require "../../database/db_config.php";
 
-// GET ALL
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+require  "../../database/db_config.php";
 
-    // GET ONE
-    if (isset($_GET['id'])) {
-        $id = intval($_GET['id']);
+$metode = $_SERVER['REQUEST_METHOD'];
 
-        $stmt = $savienojums->prepare("SELECT * FROM IT_aktualitates WHERE id = ?");
-        $stmt->execute([$id]);
-        echo json_encode($stmt->fetch(PDO::FETCH_ASSOC));
-        exit;
+// GET
+if ($metode === 'GET') {
+
+    $sql = "SELECT a.*, u.vards, u.uzvards 
+        FROM IT_aktualitates a
+        LEFT JOIN IT_lietotaji u 
+        ON a.autors_id = u.lietotajs_id
+        ORDER BY a.izveidots DESC";
+
+    $rezultats = $savienojums->query($sql);
+
+    $dati = [];
+
+    while ($rinda = $rezultats->fetch_assoc()) {
+        $dati[] = $rinda;
     }
 
-    // GET ALL
-    $stmt = $savienojums->query("SELECT * FROM IT_aktualitates ORDER BY id DESC");
-    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+    echo json_encode($dati);
 }

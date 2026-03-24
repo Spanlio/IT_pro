@@ -1,20 +1,17 @@
 <?php
-    require "header.php";
+    require "header.php"
 ?>
 
-<h1>Aktualitātes (Admin)</h1>
-
-<button id="new-btn">+ Pievienot</button>
-
-<table>
+<table id="aktualitates">
     <thead>
         <tr>
-            <th>ID</th>
             <th>Virsraksts</th>
+            <th>Attēls</th>
+            <th>Autors</th>
             <th>Statuss</th>
+            <th>Datums</th>
             <th>Darbības</th>
         </tr>
     </thead>
-    <tbody id="aktualitates-table"></tbody>
+    <tbody></tbody>
 </table>
-

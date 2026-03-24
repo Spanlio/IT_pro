@@ -1,68 +1,59 @@
 
-let tabula = document.querySelector("#aktualitates-table")
+// let tabula = document.querySelector("#aktualitates-table")
 
-console.log(tabula)
+// console.log(tabula)
 
-if (!tabula) {
-    console.log("aktualitates script skipped");
-} else {
+// if (!tabula) {
+//     console.log("aktualitates script skipped");
+// } else {
 
-    const API_URL = "api/aktualitates-api.php";
 
-    let data = [];
 
-    // LOAD
-    fetch(API_URL)
-        .then(res => res.json())
-        .then(res => {
-            data = res;
-            renderTable();
-        })
-        .catch(err => console.error(err));
 
-    // RENDER TABLE
-    function renderTable() {
-        let html = "";
+    // sis ir prieks bilzu path db - ../images/imagename.png, ja izmanto jau esošo folderi
 
-        data.forEach(a => {
-            html += `
+    let tabula = document.querySelector("#aktualitates tbody");
+
+fetch("api/aktualitates-api.php")
+    .then(res => res.json())
+    .then(data => {
+        renderTable(data);
+    });
+
+function renderTable(data) {
+    let html = "";
+
+    data.forEach(a => {
+        html += `
         <tr>
-            <td>${a.id}</td>
             <td>${a.virsraksts}</td>
-            <td>${a.statuss}</td>
+            
             <td>
-                <button onclick="edit(${a.id})">Edit</button>
-                <button onclick="removeItem(${a.id})">Delete</button>
+                <img src="${a.attels}" style="width:80px; height:50px; object-fit:cover;">
+            </td>
+
+            <td>${a.vards} ${a.uzvards}</td>
+
+            <td>
+                <span class="${a.statuss === 'publicets' ? 'status-green' : 'status-gray'}">
+                    ${a.statuss}
+                </span>
+            </td>
+
+            <td>${formatDate(a.izveidots)}</td>
+
+            <td>
+                <button class="fa fa-edit btn-edit" onclick="edit(${a.id})"></button>
+                <button class="fa fa-trash btn-delete" onclick="removeItem(${a.id})"></button>
             </td>
         </tr>
         `;
-        });
+    });
 
-        document.getElementById("table-body").innerHTML = html;
-    }
+    tabula.innerHTML = html;
+}
 
-    function edit(id) {
-        fetch(API_URL + "?id=" + id)
-            .then(res => res.json())
-            .then(a => {
-                console.log("EDIT:", a);
-
-                // later → open modal and fill form
-            });
-    }
-
-    function removeItem(id) {
-        if (!confirm("Dzēst šo ierakstu?")) return;
-
-        fetch(API_URL, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: id })
-        })
-            .then(res => res.json())
-            .then(() => {
-                data = data.filter(a => a.id !== id);
-                renderTable();
-            });
-    }
+function formatDate(date) {
+    let d = new Date(date);
+    return d.toLocaleString("lv-LV");
 }
