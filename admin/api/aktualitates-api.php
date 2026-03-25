@@ -2,92 +2,172 @@
 header("Content-Type: application/json; charset=UTF-8");
 
 require "../../database/db_config.php";
+session_start();
 
+// =====================
+// REQUEST METHOD
+// =====================
 $metode = $_SERVER['REQUEST_METHOD'];
 
-// GET
+
+// =====================
+// GET (READ)
+// =====================
 if ($metode === 'GET') {
 
-    // GET ONE
+    // ===== GET ONE =====
     if (isset($_GET['id'])) {
 
         $id = intval($_GET['id']);
 
-        $sql = "SELECT * FROM IT_aktualitates WHERE id = $id";
-        $rezultats = $savienojums->query($sql);
+        $sql = "SELECT a.*, u.vards, u.uzvards 
+                FROM IT_aktualitates a
+                LEFT JOIN IT_lietotaji u 
+                ON a.autors_id = u.lietotajs_id
+                WHERE a.id = $id
+                AND dzests != 1";
 
-        echo json_encode($rezultats->fetch_assoc());
+        $rez = $savienojums->query($sql);
+
+        if ($rez && $rez->num_rows > 0) {
+            echo json_encode($rez->fetch_assoc());
+        } else {
+            echo json_encode([
+                "status" => "error",
+                "message" => "Aktualitāte nav atrasta"
+            ]);
+        }
+
         exit;
     }
 
-    // GET ALL
+    // ===== GET ALL =====
     $sql = "SELECT a.*, u.vards, u.uzvards 
-            FROM IT_aktualitates AS a
-            LEFT JOIN IT_lietotaji AS u 
+            FROM IT_aktualitates a
+            LEFT JOIN IT_lietotaji u 
             ON a.autors_id = u.lietotajs_id
-            WHERE a.dzests != '1'
+            WHERE a.dzests != 1
             ORDER BY a.izveidots DESC";
 
-    $rezultats = $savienojums->query($sql);
+    $rez = $savienojums->query($sql);
 
     $dati = [];
 
-    while ($rinda = $rezultats->fetch_assoc()) {
+    while ($rinda = $rez->fetch_assoc()) {
         $dati[] = $rinda;
     }
 
     echo json_encode($dati);
+    exit;
 }
-// ======= post =========
+
+
+// =====================
+// POST (CREATE / UPDATE)
+// =====================
 if ($metode === 'POST') {
 
-    $aktualitate = json_decode(file_get_contents("php://input"), true);
+    // ===== GET DATA =====
+    $data = json_decode(file_get_contents("php://input"), true);
 
-    $id = $aktualitate['id'];
+    $id = $data['id'] ?? null;
+    $virsraksts = $data['virsraksts'] ?? '';
+    $iss = $data['iss_apraksts'] ?? '';
+    $pilns = $data['pilns_apraksts'] ?? '';
+    $attels = $data['attels'] ?? '';
+    $statuss = $data['statuss'] ?? 'melnraksts';
 
-    $virsraksts = $aktualitate['virsraksts'];
-    $iss_apraksts = $aktualitate['iss_apraksts'];
-    $pilns_apraksts = $aktualitate['pilns_apraksts'];
-    $attels = $aktualitate['attels'];
-    $statuss = $aktualitate['statuss'];
+    // ===== VALIDATION =====
+    if (empty($virsraksts) || empty($iss)) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Nav aizpildīti visi lauki"
+        ]);
+        exit;
+    }
 
-    // UPDATE
+    // ===== UPDATE =====
     if (!empty($id)) {
 
         $sql = "UPDATE IT_aktualitates SET
                 virsraksts = '$virsraksts',
-                iss_apraksts = '$iss_apraksts',
-                pilns_apraksts = '$pilns_apraksts',
+                iss_apraksts = '$iss',
+                pilns_apraksts = '$pilns',
                 attels = '$attels',
-                statuss = '$statuss'
+                statuss = '$statuss',
+                redigets = NOW()
                 WHERE id = $id";
 
-        $savienojums->query($sql);
+        if ($savienojums->query($sql)) {
+            echo json_encode([
+                "status" => "success",
+                "message" => "Aktualitāte veiksmīgi rediģēta"
+            ]);
+        } else {
+            echo json_encode([
+                "status" => "error",
+                "message" => "Kļūda rediģējot"
+            ]);
+        }
 
-        echo json_encode(["status" => "updated"]);
         exit;
     }
 
-    // INSERT (only if no id)
+    // ===== INSERT =====
+    $autors_id = $_SESSION['lietotajs_id'] ?? 0;
+
     $sql = "INSERT INTO IT_aktualitates 
-            (virsraksts, iss_apraksts, pilns_apraksts, attels, statuss)
-            VALUES ('$virsraksts', '$iss_apraksts', '$pilns_apraksts', '$attels', '$statuss')";
+            (virsraksts, iss_apraksts, pilns_apraksts, attels, statuss, autors_id, izveidots)
+            VALUES 
+            ('$virsraksts', '$iss', '$pilns', '$attels', '$statuss', '$autors_id', NOW())";
 
-    $savienojums->query($sql);
+    if ($savienojums->query($sql)) {
+        echo json_encode([
+            "status" => "success",
+            "message" => "Aktualitāte veiksmīgi pievienota"
+        ]);
+    } else {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Kļūda pievienojot"
+        ]);
+    }
 
-    echo json_encode(["status" => "inserted"]);
+    exit;
 }
-// ===== delete =====
+
+
+// =====================
+// DELETE (SOFT DELETE)
+// =====================
 if ($metode === 'DELETE') {
 
     $data = json_decode(file_get_contents("php://input"), true);
-    $id = $data['id'];
+    $id = $data['id'] ?? 0;
+
+    if (!$id) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Nepareizs ID"
+        ]);
+        exit;
+    }
 
     $sql = "UPDATE IT_aktualitates 
             SET dzests = '1' 
             WHERE id = $id";
 
-    $savienojums->query($sql);
+    if ($savienojums->query($sql)) {
+        echo json_encode([
+            "status" => "success",
+            "message" => "Aktualitāte dzēsta"
+        ]);
+    } else {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Kļūda dzēšot"
+        ]);
+    }
 
-    echo json_encode(["status" => "deleted"]);
+    exit;
 }
