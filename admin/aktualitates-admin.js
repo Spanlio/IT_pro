@@ -9,6 +9,7 @@ if (!aktualitatesTabula) {
     let tbody = aktualitatesTabula.querySelector("tbody");
 
     let edit = false;
+    let deleteId = null;
 
     // =====================
     // LOAD DATA
@@ -83,11 +84,15 @@ if (!aktualitatesTabula) {
             document.querySelector("#aktualitate_id").value = aktualitate.id;
             document.querySelector("#virsraksts").value = aktualitate.virsraksts;
             document.querySelector("#iss_apraksts").value = aktualitate.iss_apraksts;
-            document.querySelector("#pilns_apraksts").value = aktualitate.pilns_apraksts;
             document.querySelector("#attels").value = aktualitate.attels;
             document.querySelector("#statuss").value = aktualitate.statuss;
 
             showModal();
+
+            // set content AFTER tinymce loads
+            setTimeout(() => {
+                tinymce.get("pilns_apraksts")?.setContent(aktualitate.pilns_apraksts);
+            }, 150);
 
         } catch (err) {
             console.error(err);
@@ -98,8 +103,6 @@ if (!aktualitatesTabula) {
     // =====================
     // DELETE
     // =====================
-    let deleteId = null;
-
     window.deleteAktualitate = function (id) {
         deleteId = id;
 
@@ -159,10 +162,19 @@ if (!aktualitatesTabula) {
             id: document.querySelector("#aktualitate_id").value,
             virsraksts: document.querySelector("#virsraksts").value,
             iss_apraksts: document.querySelector("#iss_apraksts").value,
-            pilns_apraksts: document.querySelector("#pilns_apraksts").value,
+            pilns_apraksts: tinymce.get("pilns_apraksts").getContent(),
             attels: document.querySelector("#attels").value,
             statuss: document.querySelector("#statuss").value
         };
+
+        let pilns = tinymce.get("pilns_apraksts").getContent();
+
+        if (!pilns || pilns.trim() === "") {
+            showNotification("Pilns apraksts ir obligāts!", "error");
+            return;
+        }
+
+        
 
         try {
             let res = await fetch("api/aktualitates-api.php", {
@@ -177,6 +189,8 @@ if (!aktualitatesTabula) {
             this.reset();
 
             showNotification("Saglabāts veiksmīgi!", "success");
+
+            tinymce.get("pilns_apraksts")?.setContent("");
 
             getAktualitates();
 
@@ -208,6 +222,22 @@ if (!aktualitatesTabula) {
         }
 
         modal.style.display = "flex";
+
+        // destroy old instance
+        if (tinymce.get("pilns_apraksts")) {
+            tinymce.get("pilns_apraksts").remove();
+        }
+
+        // init AFTER modal is visible
+        setTimeout(() => {
+            tinymce.init({
+                selector: "#pilns_apraksts",
+                height: 300,
+                menubar: false,
+                plugins: ["lists", "link", "code"],
+                toolbar: "undo redo | bold italic | bullist numlist | link"
+            });
+        }, 50);
     }
 
     function hideModal() {
@@ -217,33 +247,35 @@ if (!aktualitatesTabula) {
     // =====================
     // NOTIFICATIONS
     // =====================
-    function showNotification(message, type = "success", duration = 3000) {
+    function showNotification(message, type = "success", duration = 4000) {
 
-        let container = document.querySelector("#notification-container");
+        const container = document.querySelector("#notification-container");
+        if (!container) return;
 
-        if (!container) {
-            console.error("Notification container missing!");
-            return;
-        }
-
-        let icon = type === "success"
+        const icon = type === "success"
             ? "fa-circle-check"
             : "fa-circle-xmark";
 
-        let notif = document.createElement("div");
+        const notif = document.createElement("div");
         notif.className = `notification ${type}`;
 
         notif.innerHTML = `
         <i class="fa-solid ${icon}"></i>
         <span>${message}</span>
-    `;
+        `;
 
         container.appendChild(notif);
 
         setTimeout(() => {
-            notif.style.opacity = "0";
-            notif.style.transform = "translateX(20px)";
-            setTimeout(() => notif.remove(), 300);
+            notif.classList.add("show");
+        }, 10);
+
+        setTimeout(() => {
+            notif.classList.remove("show");
+
+            setTimeout(() => {
+                notif.remove();
+            }, 500);
         }, duration);
     }
 

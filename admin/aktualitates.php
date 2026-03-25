@@ -35,7 +35,7 @@
                 <input type="text" id="iss_apraksts" required>
 
                 <label>Pilns apraksts:</label>
-                <textarea id="pilns_apraksts" required></textarea>
+                <textarea id="pilns_apraksts"></textarea>
 
                 <label>Attēls (ceļš):</label>
                 <input type="text" id="attels">

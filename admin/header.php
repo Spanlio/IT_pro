@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!isset($_SESSION["lietotajvards_divisaldie"])){
+if (!isset($_SESSION["lietotajvards_divisaldie"])) {
     header("Location: login.php");
     exit();
 }
@@ -20,21 +20,22 @@ if(!isset($_SESSION["lietotajvards_divisaldie"])){
     <script src="aktualitates-admin.js" defer></script>
     <script src="pieteikumi-script.js?v=0.1" defer></script>
     <script src="lietotaji-script.js?v=0.1" defer></script>
+    <script src="https://cdn.tiny.cloud/1/tsv590sdvai60jjhi74rhcqd8rqdf8h10ejly6yj133vo98d/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 </head>
+
 <body>
     <header>
         <a href="./" class="logo">
             <i class="fa fa-server"></i> IT atbalsts
         </a>
         <nav>
-           <a href="sakums.php" class="btn">Sākums</a>
-           <a href="pieteikumi.php" class="btn">Pieteikumi</a>
-           <a href="pro.php" class="btn">PRO īpašnieki</a>
-           <a href="aktualitates.php" class="btn">Aktualitātes</a>
-           <a href="lietotaji.php" class="btn" id="lietotajiButton">Lietotāji</a>
-           <a href="logout.php" class="btn"><i class="fa fa-power-off"></i></a>
-    </a>
+            <a href="sakums.php" class="btn">Sākums</a>
+            <a href="pieteikumi.php" class="btn">Pieteikumi</a>
+            <a href="pro.php" class="btn">PRO īpašnieki</a>
+            <a href="aktualitates.php" class="btn">Aktualitātes</a>
+            <a href="lietotaji.php" class="btn" id="lietotajiButton">Lietotāji</a>
+            <a href="logout.php" class="btn"><i class="fa fa-power-off"></i></a>
+            </a>
         </nav>
     </header>
     <div id="notification-container"></div>
-    
