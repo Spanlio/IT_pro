@@ -30,12 +30,11 @@ if(!isset($_SESSION["lietotajvards_divisaldie"])){
            <a href="sakums.php" class="btn">Sākums</a>
            <a href="pieteikumi.php" class="btn">Pieteikumi</a>
            <a href="pro.php" class="btn">PRO īpašnieki</a>
+           <a href="aktualitates.php" class="btn">Aktualitātes</a>
            <a href="lietotaji.php" class="btn" id="lietotajiButton">Lietotāji</a>
            <a href="logout.php" class="btn"><i class="fa fa-power-off"></i></a>
     </a>
         </nav>
     </header>
-    <div id="notification-container">
-        <div id="notification"></div>
-    </div>
+    <div id="notification-container"></div>
     

@@ -639,6 +639,8 @@ footer p {
     margin: 1rem 0;
 }
 
+
+
 /*=======================
         ADMIN DAĻA
 =========================
@@ -974,4 +976,181 @@ html::-webkit-scrollbar-track {
     cursor: pointer;
     line-height: 1;
     padding-left: 10px;
+}
+
+
+body {
+    font-family: Arial;
+    padding: 20px;
+}
+
+#container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.card {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+button {
+    margin-top: 10px;
+    padding: 5px 10px;
+}
+
+/* special modal warning logs */
+
+/* ===== DELETE MODAL (EXACT STYLE MATCH) ===== */
+
+#delete-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+/* modal box */
+.delete-box {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+
+    border: 1px solid #e0e0e0;
+}
+
+/* icon container */
+.delete-icon {
+    width: 55px;
+    height: 55px;
+    margin: 0 auto 12px;
+
+    background: #fce8e6;
+    color: #e74c3c;
+
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 20px;
+}
+
+/* title */
+.delete-box h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* description */
+.delete-box p {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+/* buttons container */
+.delete-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* main delete button */
+.btn-delete-main {
+    width: 100%;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* cancel button */
+.btn-cancel {
+    width: 100%;
+    background: #f1f1f1;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* ================== notifikaacijass ======= */
+
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    z-index: 9999;
+}
+
+.notification {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 14px;
+    border-radius: 6px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    color: white;
+
+    min-width: 260px;
+
+    animation: slideIn 0.25s ease;
+}
+
+/* SUCCESS */
+.notification.success {
+    background: #2ecc71;
+}
+
+/* ERROR */
+.notification.error {
+    background: #c0392b;
+}
+
+/* icon */
+.notification i {
+    font-size: 14px;
+}
+
+/* animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }

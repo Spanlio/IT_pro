@@ -16,7 +16,7 @@
     <tbody></tbody>
 </table>
 
-<div class="modal" id="aktualitates-modal">
+<div class="modal" id="aktualitates-modal" data-target="#aktualitates-modal">
     <div class="modal-box">
         <div class="close-modal" data-target="#modal-admin">
             <i class="fa-solid fa-square-xmark"></i>
@@ -60,7 +60,7 @@
     <div class="modal-box delete-box">
 
         <div class="delete-icon">
-            ⚠️
+            <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
 
         <h3>Dzēst aktualitāti</h3>
@@ -70,8 +70,13 @@
         </p>
 
         <div class="delete-actions">
-            <button id="confirm-delete" class="btn-delete-main">Jā, dzēst</button>
-            <button id="cancel-delete" class="btn-cancel">Atcelt</button>
+            <button id="confirm-delete" class="btn-delete-main">
+                <i class="fa-solid fa-trash"></i> Dzēst
+            </button>
+
+            <button id="cancel-delete" class="btn-cancel">
+                Atcelt
+            </button>
         </div>
 
     </div>

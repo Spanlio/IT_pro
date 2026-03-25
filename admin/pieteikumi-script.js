@@ -70,10 +70,8 @@ if (!tabulaPiet) {
 
 
         } catch (err) {
-            showNotification("Neizdevās ielādēt datus. Mēģiniet vēlreiz!", "error");
             console.error(err)
         }
-        showNotification("Dati ielādēti", "success");
     }
 
     async function handleTableClick(e) {
@@ -145,7 +143,6 @@ if (!tabulaPiet) {
             }
             showModal()
         } catch (err) {
-            showNotification("Neizdevās ielādēt pieteikumu", "error");
             console.error(err)
         }
     }
@@ -176,7 +173,6 @@ if (!tabulaPiet) {
             hideModal()
             await fetchPieteikumi()
         } catch (err) {
-            showNotification("Neizdevās saglabāt pieteikumu!", "error");
             console.log(err)
         }
     }
@@ -197,63 +193,11 @@ if (!tabulaPiet) {
             const res = await fetch(`api/pieteikumi-api.php?id=${id}`, { method: 'DELETE' });
             const data = await res.json();
 
-            if (res.ok) {
-                showNotification(data.message, 'success'); // green notification
-            } else {
-                showNotification(data.error || 'Neizdevās dzēst pieteikumu!', 'error'); // red notification
-            }
-
             // Refresh table after deletion
             await fetchPieteikumi();
         } catch (err) {
-            showNotification('Neizdevās dzēst pieteikumu!', 'error'); // fallback
             console.error(err);
         }
     }
-
-
-    //==================== NOTIFICATIONSSSS ===============
-    function showNotification(message, type = 'default', duration = 2500) {
-        const container = document.getElementById('notification-container');
-        if (!container) return;
-
-        // Create notification element
-        const notif = document.createElement('div');
-        notif.classList.add('notification', type);
-        notif.innerHTML = `
-        <span><i class="fa-solid fa-circle-info"></i> ${message}</span>
-        <button class="close-notif">&times;</button>
-    `;
-
-        // Append to container
-        container.appendChild(notif);
-
-        // Slide in
-        requestAnimationFrame(() => {
-            notif.classList.add('show');
-        });
-
-        // Close button
-        notif.querySelector('button.close-notif').addEventListener('click', () => {
-            hideNotification(notif);
-        });
-
-        // Auto-hide after duration
-        setTimeout(() => {
-            hideNotification(notif);
-        }, duration);
-    }
-
-    function hideNotification(notif) {
-        notif.classList.remove('show');
-        notif.addEventListener('transitionend', () => {
-            notif.remove();
-        }, { once: true });
-    }
-
     // PROOOOOOOOOOOOOOOOOOOOO
-
-    
-
-
 }

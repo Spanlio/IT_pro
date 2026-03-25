@@ -220,27 +220,8 @@ async function loadProUsers() {
 
     } catch (error) {
         console.error(error);
-        showNotification("Neizdevās ielādēt datus", "error");
     }
 }
 
-// Example notification function (if you have your notif.js loaded)
-function showNotification(message, type = 'default', duration = 2500) {
-    const container = document.getElementById('notification-container');
-    if (!container) return;
-
-    const notif = document.createElement('div');
-    notif.classList.add('notification', type);
-    notif.innerHTML = `<span><i class="fa-solid fa-circle-info"></i> ${message}</span>`;
-
-    container.appendChild(notif);
-
-    requestAnimationFrame(() => notif.classList.add('show'));
-
-    setTimeout(() => {
-        notif.classList.remove('show');
-        notif.addEventListener('transitionend', () => notif.remove(), { once: true });
-    }, duration);
-}
 }
 

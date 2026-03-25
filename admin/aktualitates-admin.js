@@ -11,43 +11,52 @@ if (!aktualitatesTabula) {
     let edit = false;
 
     // =====================
-    // LOAD DATA (like your other scripts)
+    // LOAD DATA
     // =====================
     async function getAktualitates() {
-        let res = await fetch("api/aktualitates-api.php");
-        let data = await res.json();
+        try {
+            let res = await fetch("api/aktualitates-api.php");
 
-        let html = "";
+            if (!res.ok) throw new Error("Neizdevās ielādēt datus");
 
-        data.forEach(a => {
-            html += `
-            <tr>
-                <td>${a.virsraksts}</td>
-                
-                <td>
-                    <img src="${a.attels ? a.attels : '../images/no-image.png'}"
-                         style="width:80px; height:50px; object-fit:cover;">
-                </td>
+            let data = await res.json();
 
-                <td>${a.vards ? a.vards + " " + a.uzvards : "Nav autora"}</td>
+            let html = "";
 
-                <td>
-                    <span class="${a.statuss === 'publicets' ? 'status-green' : 'status-gray'}">
-                        ${a.statuss}
-                    </span>
-                </td>
+            data.forEach(a => {
+                html += `
+                <tr>
+                    <td>${a.virsraksts}</td>
+                    
+                    <td>
+                        <img src="${a.attels ? a.attels : '../images/no-image.png'}"
+                             style="width:80px; height:50px; object-fit:cover;">
+                    </td>
 
-                <td>${formatDate(a.izveidots)}</td>
+                    <td>${a.vards ? a.vards + " " + a.uzvards : "Nav autora"}</td>
 
-                <td>
-                    <button class="fa fa-edit btn-edit" onclick="editAktualitate(${a.id})"></button>
-                    <button class="fa fa-trash btn-delete" onclick="deleteAktualitate(${a.id})"></button>
-                </td>
-            </tr>
-            `;
-        });
+                    <td>
+                        <span class="${a.statuss === 'publicets' ? 'status-green' : 'status-gray'}">
+                            ${a.statuss}
+                        </span>
+                    </td>
 
-        tbody.innerHTML = html;
+                    <td>${formatDate(a.izveidots)}</td>
+
+                    <td>
+                        <button class="fa fa-edit btn-edit" onclick="editAktualitate(${a.id})"></button>
+                        <button class="fa fa-trash btn-delete" onclick="deleteAktualitate(${a.id})"></button>
+                    </td>
+                </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+
+        } catch (err) {
+            console.error(err);
+            showNotification("Kļūda ielādējot datus!", "error");
+        }
     }
 
     // =====================
@@ -62,62 +71,78 @@ if (!aktualitatesTabula) {
     // EDIT
     // =====================
     window.editAktualitate = async function (id) {
-        let res = await fetch("api/aktualitates-api.php?id=" + id);
-        let aktualitate = await res.json();
+        try {
+            let res = await fetch("api/aktualitates-api.php?id=" + id);
 
-        edit = true;
+            if (!res.ok) throw new Error("Kļūda ielādējot ierakstu");
 
-        document.querySelector("#aktualitate_id").value = aktualitate.id;
-        document.querySelector("#virsraksts").value = aktualitate.virsraksts;
-        document.querySelector("#iss_apraksts").value = aktualitate.iss_apraksts;
-        document.querySelector("#pilns_apraksts").value = aktualitate.pilns_apraksts;
-        document.querySelector("#attels").value = aktualitate.attels;
-        document.querySelector("#statuss").value = aktualitate.statuss;
+            let aktualitate = await res.json();
 
-        showModal();
+            edit = true;
+
+            document.querySelector("#aktualitate_id").value = aktualitate.id;
+            document.querySelector("#virsraksts").value = aktualitate.virsraksts;
+            document.querySelector("#iss_apraksts").value = aktualitate.iss_apraksts;
+            document.querySelector("#pilns_apraksts").value = aktualitate.pilns_apraksts;
+            document.querySelector("#attels").value = aktualitate.attels;
+            document.querySelector("#statuss").value = aktualitate.statuss;
+
+            showModal();
+
+        } catch (err) {
+            console.error(err);
+            showNotification("Kļūda atverot aktualitāti!", "error");
+        }
     }
 
     // =====================
     // DELETE
     // =====================
-    window.deleteAktualitate = async function (id) {
-        let deleteId = null;
+    let deleteId = null;
 
-        // open modal
-        window.deleteAktualitate = function (id) {
-            deleteId = id;
+    window.deleteAktualitate = function (id) {
+        deleteId = id;
 
-            document.querySelector("#delete-modal").style.display = "flex";
-        };
+        let modal = document.querySelector("#delete-modal");
 
-        await fetch("api/aktualitates-api.php", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id })
-        });
+        if (!modal) {
+            console.error("Delete modal not found!");
+            showNotification("Kļūda ar dzēšanas logu!", "error");
+            return;
+        }
 
-        getAktualitates(); // 🔥 like your scripts (refresh table only)
-    }
-
-    // delete accept
+        modal.style.display = "flex";
+    };
 
     document.querySelector("#confirm-delete").addEventListener("click", async () => {
 
-        if (!deleteId) return;
+        if (!deleteId) {
+            showNotification("Kļūda! Mēģini vēlreiz.", "error");
+            return;
+        }
 
-        await fetch("api/aktualitates-api.php", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: deleteId })
-        });
+        try {
+            let res = await fetch("api/aktualitates-api.php", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: deleteId })
+            });
 
-        document.querySelector("#delete-modal").style.display = "none";
+            if (!res.ok) throw new Error("Delete failed");
 
-        deleteId = null;
+            document.querySelector("#delete-modal").style.display = "none";
 
-        getAktualitates(); // refresh table
+            showNotification("Aktualitāte dzēsta!", "success");
+
+            deleteId = null;
+
+            getAktualitates();
+
+        } catch (err) {
+            console.error(err);
+            showNotification("Kļūda dzēšot!", "error");
+        }
     });
-
 
     document.querySelector("#cancel-delete").addEventListener("click", () => {
         document.querySelector("#delete-modal").style.display = "none";
@@ -139,16 +164,26 @@ if (!aktualitatesTabula) {
             statuss: document.querySelector("#statuss").value
         };
 
-        await fetch("api/aktualitates-api.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(aktualitate)
-        });
+        try {
+            let res = await fetch("api/aktualitates-api.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(aktualitate)
+            });
 
-        hideModal();
-        this.reset();
+            if (!res.ok) throw new Error("Save failed");
 
-        getAktualitates(); // 🔥 same pattern
+            hideModal();
+            this.reset();
+
+            showNotification("Saglabāts veiksmīgi!", "success");
+
+            getAktualitates();
+
+        } catch (err) {
+            console.error(err);
+            showNotification("Kļūda saglabājot!", "error");
+        }
     });
 
     // =====================
@@ -167,7 +202,8 @@ if (!aktualitatesTabula) {
         let modal = document.querySelector("#aktualitates-modal");
 
         if (!modal) {
-            console.error("Modalais edit aktualitates logs not found!");
+            console.error("Modal not found!");
+            showNotification("Kļūda ar logu!", "error");
             return;
         }
 
@@ -176,6 +212,39 @@ if (!aktualitatesTabula) {
 
     function hideModal() {
         document.querySelector("#aktualitates-modal").style.display = "none";
+    }
+
+    // =====================
+    // NOTIFICATIONS
+    // =====================
+    function showNotification(message, type = "success", duration = 3000) {
+
+        let container = document.querySelector("#notification-container");
+
+        if (!container) {
+            console.error("Notification container missing!");
+            return;
+        }
+
+        let icon = type === "success"
+            ? "fa-circle-check"
+            : "fa-circle-xmark";
+
+        let notif = document.createElement("div");
+        notif.className = `notification ${type}`;
+
+        notif.innerHTML = `
+        <i class="fa-solid ${icon}"></i>
+        <span>${message}</span>
+    `;
+
+        container.appendChild(notif);
+
+        setTimeout(() => {
+            notif.style.opacity = "0";
+            notif.style.transform = "translateX(20px)";
+            setTimeout(() => notif.remove(), 300);
+        }, duration);
     }
 
     // =====================
