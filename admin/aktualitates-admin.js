@@ -30,7 +30,7 @@ if (!aktualitatesTabula) {
                     <td>${a.virsraksts}</td>
                     
                     <td>
-                        <img src="${a.attels ? a.attels : '../images/no-image.png'}"
+                        <img src="${a.attels ? '../' + a.attels : '../images/no-image.png'}"
                              style="width:80px; height:50px; object-fit:cover;">
                     </td>
 
@@ -84,15 +84,9 @@ if (!aktualitatesTabula) {
             document.querySelector("#aktualitate_id").value = aktualitate.id;
             document.querySelector("#virsraksts").value = aktualitate.virsraksts;
             document.querySelector("#iss_apraksts").value = aktualitate.iss_apraksts;
-            document.querySelector("#attels").value = aktualitate.attels;
             document.querySelector("#statuss").value = aktualitate.statuss;
 
-            showModal();
-
-            // set content AFTER tinymce loads
-            setTimeout(() => {
-                tinymce.get("pilns_apraksts")?.setContent(aktualitate.pilns_apraksts);
-            }, 150);
+            showModal(aktualitate.pilns_apraksts);
 
         } catch (err) {
             console.error(err);
@@ -109,7 +103,6 @@ if (!aktualitatesTabula) {
         let modal = document.querySelector("#delete-modal");
 
         if (!modal) {
-            console.error("Delete modal not found!");
             showNotification("Kļūda ar dzēšanas logu!", "error");
             return;
         }
@@ -153,19 +146,10 @@ if (!aktualitatesTabula) {
     });
 
     // =====================
-    // SAVE
+    // SAVE (UPLOAD FIXED)
     // =====================
     document.querySelector("#aktualitatesForma").addEventListener("submit", async function (e) {
         e.preventDefault();
-
-        let aktualitate = {
-            id: document.querySelector("#aktualitate_id").value,
-            virsraksts: document.querySelector("#virsraksts").value,
-            iss_apraksts: document.querySelector("#iss_apraksts").value,
-            pilns_apraksts: tinymce.get("pilns_apraksts").getContent(),
-            attels: document.querySelector("#attels").value,
-            statuss: document.querySelector("#statuss").value
-        };
 
         let pilns = tinymce.get("pilns_apraksts").getContent();
 
@@ -174,23 +158,34 @@ if (!aktualitatesTabula) {
             return;
         }
 
-        
+        let aktualitate = new FormData();
+
+        aktualitate.append("id", document.querySelector("#aktualitate_id").value);
+        aktualitate.append("virsraksts", document.querySelector("#virsraksts").value);
+        aktualitate.append("iss_apraksts", document.querySelector("#iss_apraksts").value);
+        aktualitate.append("pilns_apraksts", pilns);
+        aktualitate.append("statuss", document.querySelector("#statuss").value);
+
+        let fileInput = document.querySelector("#attels");
+
+        if (fileInput.files[0]) {
+            aktualitate.append("attels", fileInput.files[0]);
+        }
 
         try {
             let res = await fetch("api/aktualitates-api.php", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(aktualitate)
+                body: aktualitate
             });
 
-            if (!res.ok) throw new Error("Save failed");
+            let data = await res.json();
 
             hideModal();
             this.reset();
 
-            showNotification("Saglabāts veiksmīgi!", "success");
-
             tinymce.get("pilns_apraksts")?.setContent("");
+
+            showNotification(data.message, data.status);
 
             getAktualitates();
 
@@ -201,41 +196,43 @@ if (!aktualitatesTabula) {
     });
 
     // =====================
-    // MODAL
+    // MODAL + TINYMCE FIX
     // =====================
     document.querySelector("#new-btn")?.addEventListener("click", () => {
         edit = false;
         document.querySelector("#aktualitatesForma").reset();
         document.querySelector("#aktualitate_id").value = "";
-        showModal();
+        showModal("");
     });
 
     document.querySelector(".close-modal")?.addEventListener("click", hideModal);
 
-    function showModal() {
+    function showModal(content = "") {
         let modal = document.querySelector("#aktualitates-modal");
 
         if (!modal) {
-            console.error("Modal not found!");
             showNotification("Kļūda ar logu!", "error");
             return;
         }
 
         modal.style.display = "flex";
 
-        // destroy old instance
         if (tinymce.get("pilns_apraksts")) {
             tinymce.get("pilns_apraksts").remove();
         }
 
-        // init AFTER modal is visible
         setTimeout(() => {
             tinymce.init({
                 selector: "#pilns_apraksts",
                 height: 300,
                 menubar: false,
                 plugins: ["lists", "link", "code"],
-                toolbar: "undo redo | bold italic | bullist numlist | link"
+                toolbar: "undo redo | bold italic | bullist numlist | link",
+                setup: function (editor) {
+                    editor.on("init", function () {
+                        editor.setContent(content || "");
+                    });
+                }
             });
         }, 50);
     }
@@ -266,16 +263,11 @@ if (!aktualitatesTabula) {
 
         container.appendChild(notif);
 
-        setTimeout(() => {
-            notif.classList.add("show");
-        }, 10);
+        setTimeout(() => notif.classList.add("show"), 10);
 
         setTimeout(() => {
             notif.classList.remove("show");
-
-            setTimeout(() => {
-                notif.remove();
-            }, 500);
+            setTimeout(() => notif.remove(), 500);
         }, duration);
     }
 

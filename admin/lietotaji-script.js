@@ -15,7 +15,7 @@ if (!tabula) {
     document.addEventListener('click', handleTableClick)
     document.querySelector('#pieteikumaFormaLietotajs').addEventListener('submit', handleFormSubmit)
 
-    // parole show/hide
+    // parole hide
     const parolesLogs = document.querySelector('#parole');
     document.querySelector('#paraditParoli').addEventListener('click', showParole);
 

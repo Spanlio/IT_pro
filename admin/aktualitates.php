@@ -37,8 +37,8 @@
                 <label>Pilns apraksts:</label>
                 <textarea id="pilns_apraksts"></textarea>
 
-                <label>Attēls (ceļš):</label>
-                <input type="text" id="attels">
+                <label>Attēls:</label>
+                <input type="file" id="attels" accept="image/*">
 
                 <label>Statuss:</label>
                 <select id="statuss">
