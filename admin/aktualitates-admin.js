@@ -10,6 +10,7 @@ if (!aktualitatesTabula) {
 
     let edit = false;
     let deleteId = null;
+    let isSubmitting = false;
 
     // =====================
     // LOAD DATA
@@ -146,20 +147,20 @@ if (!aktualitatesTabula) {
     });
 
     // =====================
-    // SAVE (UPLOAD FIXED)
+    // SAVE
     // =====================
     document.querySelector("#aktualitatesForma").addEventListener("submit", async function (e) {
         e.preventDefault();
 
+        if (isSubmitting) return;
+        isSubmitting = true;
+
+        const btn = this.querySelector("button[type='submit']");
+        if (btn) btn.disabled = true;
+
         let pilns = tinymce.get("pilns_apraksts").getContent();
 
-        if (!pilns || pilns.trim() === "") {
-            showNotification("Pilns apraksts ir obligāts!", "error");
-            return;
-        }
-
         let aktualitate = new FormData();
-
         aktualitate.append("id", document.querySelector("#aktualitate_id").value);
         aktualitate.append("virsraksts", document.querySelector("#virsraksts").value);
         aktualitate.append("iss_apraksts", document.querySelector("#iss_apraksts").value);
@@ -169,7 +170,17 @@ if (!aktualitatesTabula) {
         let fileInput = document.querySelector("#attels");
 
         if (fileInput.files[0]) {
-            aktualitate.append("attels", fileInput.files[0]);
+            const file = fileInput.files[0];
+
+            // bildes izmera checks (2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification("Attēls pārāk liels (max 2MB)", "error");
+                isSubmitting = false;
+                if (btn) btn.disabled = false;
+                return;
+            }
+
+            aktualitate.append("attels", file);
         }
 
         try {
@@ -182,21 +193,22 @@ if (!aktualitatesTabula) {
 
             hideModal();
             this.reset();
-
             tinymce.get("pilns_apraksts")?.setContent("");
 
             showNotification(data.message, data.status);
 
-            getAktualitates();
+            await getAktualitates();
 
         } catch (err) {
             console.error(err);
             showNotification("Kļūda saglabājot!", "error");
+        } finally {
+            isSubmitting = false;
+            if (btn) btn.disabled = false;
         }
     });
-
     // =====================
-    // MODAL + TINYMCE FIX
+    // MODAL +  TINYMCE
     // =====================
     document.querySelector("#new-btn")?.addEventListener("click", () => {
         edit = false;
@@ -269,6 +281,18 @@ if (!aktualitatesTabula) {
             notif.classList.remove("show");
             setTimeout(() => notif.remove(), 500);
         }, duration);
+    }
+
+    // ========================== create modal function ==============
+    document.getElementById("addAktualitateBtn").addEventListener("click", () => {
+        openCreateModal();
+    });
+
+    function openCreateModal() {
+        edit = false; // nosaka edit vai create, saja gadijuma bus creaate
+        document.querySelector("#aktualitatesForma").reset();
+        document.querySelector("#aktualitate_id").value = "";
+        showModal("");
     }
 
     // =====================

@@ -52,3 +52,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('language') || 'lv';
     setLanguage(savedLang);
 });
+

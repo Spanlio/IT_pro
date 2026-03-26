@@ -192,11 +192,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadProUsers() {
-    const tbody = document.getElementById("pieteikumi");
+    const tbody = document.getElementById("pro_lietotaji");
     if (!tbody) return;
 
     try {
-        const response = await fetch("pro-api.php");
+        const response = await fetch("api/pro-api.php");
         if (!response.ok) throw new Error("Neizdevās ielādēt datus");
 
         const data = await response.json();

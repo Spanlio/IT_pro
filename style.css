@@ -1,10 +1,7 @@
-/* =====================
-   1. RESET & ROOT
-===================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
+    /* kraasinas */
     --orange: #f7921f;
     --dark-1: #444;
     --dark-2: #666;
@@ -15,35 +12,32 @@
 }
 
 * {
-    font-family: 'Poppins', sans-serif;
+    /* viss tiek nahrenizeets */
+    font-family: 'Poppins', 'sans-serif', system-ui;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    outline: none;
+    border: none;
     text-decoration: none;
+    transition: all .3s linear;
 }
-
-/* =====================
-   2. BASE
-===================== */
 
 body {
     background: var(--light-2);
 }
 
-/* =====================
-   3. HEADER / NAV
-===================== */
-
 header {
     position: sticky;
     top: 0;
     width: 100%;
-    padding: 1rem 12%; /* ← your gap */
+    padding: 1rem 12%;
     background: var(--light-1);
     box-shadow: var(--box-shadow);
     z-index: 1;
     display: flex;
     justify-content: space-between;
+    /* katrs berns sava puse*/
     align-items: center;
 }
 
@@ -62,12 +56,9 @@ nav {
     color: var(--orange);
 }
 
-/* =====================
-   4. BUTTONS
-===================== */
-
 .btn {
     display: inline-block;
+    /* novērš pogas būšanu virsū paragrāfam */
     font-size: 1rem;
     border-radius: var(--border-r);
     background: var(--light-2);
@@ -79,6 +70,7 @@ nav {
     color: var(--light-1);
     background: var(--dark-1);
     cursor: pointer;
+    /*nomaina pelites dizainu hoverojot*/
 }
 
 .active {
@@ -86,17 +78,9 @@ nav {
     background: var(--orange);
 }
 
-/* =====================
-   5. SECTIONS
-===================== */
-
 section {
     padding: 4rem 12%;
 }
-
-/* =====================
-   6. INFO (HERO)
-===================== */
 
 .info {
     display: flex;
@@ -105,10 +89,16 @@ section {
     gap: 1.5rem;
     padding-top: 7rem;
     background: url('images/main-bg.png') top center / cover no-repeat fixed;
+    /*1 vertiba norada vertikali(top),
+                                                                                2 vertiba horzontali(center),
+                                                                                3 vertiba(cover) automatiski apgriez vinu,
+                                                                                4 vertiba(no-repeat) nelauj izzomojot atkartoties bildei
+                                                                                5 vertiba(fixed) paliek bilde augsa*/
 }
 
 .info .image {
     flex: 1 1 20rem;
+    /* bildei ne mazak ka 20rem, primais 1 parada ka var flexot, otrs, ka var shrinkot, šis palīdz ar responsivitāti ;D*/
 }
 
 .info .image img {
@@ -119,31 +109,40 @@ section {
     flex: 1 1 25rem;
 }
 
-.info p {
-    color: var(--dark-2);
-    line-height: 1.7;
-}
-
-/* =====================
-   7. TYPOGRAPHY
-===================== */
-
 h1 {
     color: var(--dark-1);
     font-size: 2rem;
     margin-bottom: 2rem;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-weight: 500;
 }
 
-/* =====================
-   8. SERVICES
-===================== */
+.info p {
+    color: var(--dark-2);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.services h1,
+.blog h1 {
+    text-align: center;
+}
+
+span {
+    background: var(--orange);
+    color: var(--light-1);
+    border-radius: var(--border-r);
+    padding: .3rem .5rem;
+}
 
 .services .box-container {
     display: flex;
+    justify-content: space-evenly;
     flex-wrap: wrap;
     gap: 2rem;
 }
@@ -157,19 +156,40 @@ h1, h2, h3 {
     text-align: center;
 }
 
-/* =====================
-   9. BLOG
-===================== */
+.services .box i {
+    width: 4rem;
+    height: 4rem;
+    line-height: 4rem;
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--light-1);
+    background: var(--orange);
+    border-radius: 50%;
+}
+
+.services .box:hover i {
+    transform: scale(1.3);
+}
+
+.services h2 {
+    color: var(--dark-1);
+    font-size: 1.5rem;
+    margin: 1rem 0;
+}
 
 .blog-container {
     display: flex;
     gap: 2rem;
     flex-wrap: wrap;
+    margin-top: 2rem;
 }
 
 .blog-card {
     position: relative;
     flex: 1 1 20rem;
+    border-radius: var(--border-r);
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
     overflow: hidden;
 }
 
@@ -179,112 +199,1049 @@ h1, h2, h3 {
     object-fit: cover;
 }
 
-/* =====================
-   10. ADMIN
-===================== */
+.blog-card:hover img {
+    transform: scale(1.1);
+}
 
-.admin-main {
+.blog-overlay {
+    position: absolute;
+    inset: 0;
+    background: #00000099;
+    color: var(--light-1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+    opacity: 0;
+}
+
+.blog-card:hover .blog-overlay {
+    /*ja hovero .blog-card, tad tas iedarbojas uz .blog-overlay*/
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+
+    header,
+    section {
+        padding-inline: 5%;
+    }
+
+    .box-container,
+    .blog-container {
+        flex-direction: column;
+    }
+
+    h1,
+    h2,
+    p {
+        text-align: center;
+    }
+
+    .btn {
+        text-align: center;
+        display: block;
+    }
+
+    .admin-top,
+    .admin-main {
+        margin-inline: 2%;
+    }
+
+    td:nth-child(4),
+    th:nth-child(4),
+    td:nth-child(5),
+    th:nth-child(5),
+    td:nth-child(6),
+    th:nth-child(6) {
+        display: none;
+    }
+
+    .form-elements {
+        width: 100%;
+    }
+}
+
+#kapec ul li {
+    list-style-type: none;
+}
+
+#kapec ul li i {
+    padding-right: .5rem;
+    color: var(--orange);
+}
+
+@media(max-width: 769px) {
+    #kapec ul {
+        text-align: center;
+    }
+}
+
+/* =======================
+   KOMANDA SEKCIJA
+======================= */
+
+.komanda h1 {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.komanda-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.komanda-dalibnieks {
+    flex: 1 1 16rem;
+    max-width: 22rem;
     background: var(--light-1);
-    margin: 2rem 12%;
+    border-radius: var(--border-r);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    text-align: center;
+}
+
+.komanda-dalibnieks img {
+    width: 100%;
+    height: 22rem;
+    object-fit: cover;
+    display: block;
+}
+
+.komanda-dalibnieks h2 {
+    color: var(--dark-1);
+    font-size: 1.3rem;
+    margin-top: 1.2rem;
+}
+
+.komanda-dalibnieks p {
+    color: var(--dark-2);
+    font-size: 0.95rem;
+    margin: .5rem 0 1.5rem;
+}
+
+/* Sociālie tīkli */
+
+.soc-container {
+    padding-bottom: 1.5rem;
+}
+
+.soctikls {
+    display: flex;
+    justify-content: space-evenly;
+    gap: .8rem;
+    margin: 0 .5rem;
+    padding: 0;
+
+}
+
+.soctikls i {
+    padding: 0;
+    flex: 1 1 100%;
+    line-height: 2rem;
+    background: var(--orange);
+    color: var(--light-1);
+    border-radius: var(--border-r);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.soctikls i:hover {
+    background: var(--dark-1);
+    transform: translateY(-5px);
+}
+
+/* Responsive papildus uzlabojums */
+
+@media (max-width: 769px) {
+    .komanda-dalibnieks {
+        max-width: 100%;
+    }
+}
+
+/* =======================
+   SAZINIES SEKCIJA
+======================= */
+
+.sazinies h1 {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.sazinies .content {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+/* KARTE */
+
+#karte {
+    flex: 1 1 25rem;
+    background: var(--light-1);
     padding: 1rem;
+    border-radius: var(--border-r);
+    box-shadow: var(--box-shadow);
+}
+
+#karte iframe {
+    width: 100%;
+    min-height: 350px;
     border-radius: var(--border-r);
 }
 
-/* =====================
-   11. TABLE
-===================== */
+/* FORMA */
 
-table {
-    width: 100%;
+.sazinaasanas {
+    flex: 1 1 25rem;
+    background: var(--light-1);
+    padding: 2rem;
+    border-radius: var(--border-r);
+    box-shadow: var(--box-shadow);
 }
 
-td, th {
+.sazinaasanas form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.sazinaasanas input,
+.sazinaasanas textarea {
+    background: var(--light-2);
     padding: 1rem;
+    border-radius: var(--border-r);
+    font-size: 1rem;
+    color: var(--dark-1);
 }
 
-/* =====================
-   12. MODALS
-===================== */
+.sazinaasanas textarea {
+    resize: none;
+    min-height: 200px;
+}
+
+/* POGA */
+
+.sazinaasanas button {
+    width: 100%;
+    padding: .6rem;
+    margin-top: .3rem;
+    background: var(--orange);
+    color: var(--light-1);
+    border-radius: var(--border-r);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.sazinaasanas button:hover {
+    background: var(--dark-1);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 769px) {
+    .sazinies .content {
+        flex-direction: column;
+    }
+
+    #karte iframe {
+        min-height: 300px;
+    }
+}
+
+/* =======================
+   FOOTER
+======================= */
+
+footer {
+    background: var(--dark-1);
+    color: var(--light-1);
+    padding: 3rem 12% 2rem;
+    text-align: center;
+}
+
+footer ul {
+    list-style-type: none;
+}
+
+footer ul li {
+    margin: 0 auto 1rem;
+}
+
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+
+.konteineris-apaksai {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.konteineris-apaksai ul li a {
+    color: var(--light-1);
+}
+
+.nosaukums {
+    flex: 1 1 15rem;
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+}
+
+.nosaukums h3 {
+    font-weight: 500;
+    margin-bottom: .5rem;
+}
+
+/* Ikonas */
+
+.nosaukums i {
+    color: var(--orange);
+    margin-right: .5rem;
+    display: inline;
+}
+
+/* līnija */
+
+.konteineris-apaksai {
+    border-bottom: 1px solid var(--light-1);
+}
+
+/* Copyright */
+
+footer p {
+    text-align: center;
+    font-size: .9rem;
+    color: #dddddd;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 769px) {
+    .konteineris-apaksai {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nosaukums {
+        align-items: center;
+    }
+}
+
+
+
+/*  =================== 
+        Modālais logs 
+    ===================*/
 
 .modal {
     display: none;
     position: fixed;
+    background: rgba(0, 0, 0, 0.7);
     inset: 0;
-    background: rgba(0,0,0,0.7);
-    justify-content: center;
+    z-index: 1;
     align-items: center;
+    justify-content: center;
+}
+
+.modal.modal-active {
+    display: flex;
 }
 
 .modal-box {
     background: var(--light-2);
+    max-width: 50rem;
+    box-shadow: var(--box-shadow);
     padding: 2rem;
+    margin: 1rem;
+    border-radius: var(--border-r);
+    position: relative;
+}
+
+.modal .close-modal {
+    position: absolute;
+    top: 0;
+    right: .2rem;
+    color: var(--orange);
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.modal .close-modal {
+    color: var(--dark-1);
+}
+
+.modal h2 {
+    text-align: center;
+}
+
+.modal .btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.modal input,
+.modal textarea,
+select {
+    width: 100%;
+    border-radius: var(--border-r);
+    padding: .7rem;
+    background: var(--light-1);
+    box-shadow: var(--box-shadow);
+    color: var(--dark-1);
+    margin: .4rem 0;
+    font-size: 1rem;
+}
+
+.modal textarea {
+    resize: vertical;
+}
+
+.modal .buy-pro {
+    margin: 2rem 0;
+    padding: 2rem;
+    background: var(--light-1);
+    border-radius: var(--border-r)
+}
+
+.modal .buy-pro ul {
+    list-style: none;
+    padding: 1rem;
+}
+
+.modal .buy-pro ul li {
+    color: var(--orange);
+}
+
+.btn-edit {
+    color: #009800;
+}
+
+.btn-delete {
+    color: #980000;
+}
+
+.btn-edit:hover,
+.btn-delete:hover {
+    color: var(--dark-1);
+    cursor: pointer;
+}
+
+.notif {
+    font-size: 1.2rem;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.login-notif {
+    background: #990000;
+    color: var(--light-1);
+    border-radius: var(--border-r);
+    text-align: center;
+    margin: 1rem 0;
+}
+
+
+
+/*=======================
+        ADMIN DAĻA
+=========================
+*/
+
+@media(max-width: 960px) {
+    .admin-dashboard {
+        font-size: 80%;
+    }
+}
+
+.admin-top {
+    display: flex;
+    justify-content: space-between;
+    margin: 2rem 12%;
+}
+
+.btn-sm {
+    display: inline-block;
+    font-size: .8rem;
+    border-radius: var(--border-r);
+    background-color: var(--orange);
+    color: var(--light-1);
+    padding: .5rem;
+}
+
+.btn-sm:hover {
+    background-color: var(--dark-2);
+    cursor: pointer;
+}
+
+.admin-top input {
+    width: 15rem;
+    font-size: .8rem;
+    border-radius: var(--border-r);
+    padding: .5rem;
+}
+
+.admin-main {
+    background: var(--light-1);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-r);
+    margin: 2rem 12%;
+    padding: 1rem;
+}
+
+table {
+    width: 100%;
+    border-spacing: 0 .5rem;
+    font-size: .8rem;
+}
+
+tr {
+    background: var(--light-2);
+}
+
+tr:hover {
+    background: #e9e9e9;
+}
+
+th {
+    background: var(--dark-2);
+    color: var(--light-1);
+    padding: 1rem;
+    text-align: left;
+}
+
+td {
+    padding: 1rem;
+    word-break: break-all;
+}
+
+td:first-child,
+th:first-child {
+    border-top-left-radius: var(--border-r);
+    border-bottom-left-radius: var(--border-r);
+}
+
+td:last-child,
+th:last-child {
+    border-top-right-radius: var(--border-r);
+    border-bottom-right-radius: var(--border-r);
+}
+
+.form-elements {
+    display: grid;
+    grid-template-columns: 35% 65%;
+    align-items: center;
+    width: 45rem;
+}
+
+
+
+
+
+
+.notif p {
+    background: var(--light-1);
+    border-radius: var(--border-r);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.modal-box {
+    padding: 1rem;
+    margin: .5rem;
+}
+
+.modal input,
+.modal textarea {
+    padding: .5rem;
+    font-size: .8rem;
+}
+
+.modal .buy-pro {
+    margin: 1rem 0;
+    padding: 1rem;
+}
+
+/* SCROLLBARS */
+
+html::-webkit-scrollbar {
+    width: 12px;
+    /* width of vertical scrollbar */
+    height: 12px;
+    /* height of horizontal scrollbar */
+}
+
+html::-webkit-scrollbar-thumb {
+    background-color: var(--orange);
+    /* orange thumb */
+    border-radius: 6px;
+    /* rounded corners */
+    border: 3px solid var(--dark-2);
+    /* padding effect around thumb */
+}
+
+html::-webkit-scrollbar-track {
+    background-color: var(--dark-2);
+    /* light gray track */
+    border-radius: 6px;
+}
+
+/* Custom text selection */
+::selection {
+    background-color: var(--orange);
+    /* orange background */
+    color: #ffffff;
+    /* white text */
+}
+
+
+/* ========================================================================
+
+                PATSTĀVĪGAIS DARBS
+                
+   ========================================================================*/
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    margin: 2rem 12%;
+    background-color: var(--light-1);
+    padding: 1rem;
     border-radius: var(--border-r);
 }
 
-/* =====================
-   13. DELETE MODAL
-===================== */
+.stats-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 2rem;
+}
+
+#admin-vards {
+    text-align: left;
+    /* width: 23rem; */
+    flex-direction: column;
+}
+
+.stats {
+    background: var(--light-2);
+    display: flex;
+    flex: 1 1 200px;
+    /* grow, shrink, min width */
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-r);
+    padding: 2rem;
+}
+
+.stats p {
+    color: var(--dark-2);
+    white-space: nowrap
+}
+
+.stats .icon {
+    border-radius: 50%;
+    background: var(--orange);
+    margin-right: 1rem;
+    padding: .7rem;
+}
+
+.stats .icon i {
+    color: var(--light-1);
+    text-align: center;
+}
+
+
+@media (max-width: 600px) {
+    .stats-container {
+        flex-direction: column;
+    }
+}
+
+/* ========= STATS 2 ========= */
+
+/* 1.tabula */
+
+.stats2 {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.virsraksts {
+    background: var(--dark-1);
+    color: var(--light-1);
+    border-radius: .4rem;
+    height: 3rem;
+
+}
+
+.virsraksts h3 {
+    text-align: center;
+    align-items: center;
+}
+
+.stats2 .table {
+    width: 49%;
+    border-radius: .4rem;
+}
+
+.stats2 .table th {
+    background: var(--dark-1);
+}
+
+@media(max-width: 480px) {
+    .stats2 {
+        flex-direction: column;
+    }
+
+    .stats2 .table {
+        width: 98%;
+    }
+}
+
+
+#paraditParoli,
+#parole {
+    grid-column: 2;
+
+
+    height: 2.5rem;
+    border-radius: var(--border-r);
+}
+
+#paraditParoli {
+    color: white;
+    background: var(--orange);
+}
+
+#paraditParoli:hover {
+    background: var(--dark-1);
+}
+
+#parole,
+#pedejasIzmainas {
+    display: none;
+}
+
+#ip {
+    display: none;
+}
+
+
+
+
+/* ============== */
+
+
+/* Notification container (top-right) */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Individual notifications */
+.notification {
+    min-width: 240px;
+    max-width: 320px;
+    padding: 14px 20px;
+    border-radius: var(--border-r);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: var(--light-1);
+    box-shadow: var(--box-shadow);
+    opacity: 0;
+    transform: translateX(120%);
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Slide in */
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Types */
+.notification.success {
+    background-color: #28a745;
+    /* green */
+}
+
+.notification.error {
+    background-color: #dc3545;
+    /* red */
+}
+
+/* Close button */
+.notification button.close-notif {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    padding-left: 10px;
+}
+
+
+body {
+    font-family: Arial;
+    padding: 20px;
+}
+
+#container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.card {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+button {
+    margin-top: 10px;
+    padding: 5px 10px;
+}
+
+/* special modal warning logs */
+
+/* ===== DELETE MODAL (EXACT STYLE MATCH) ===== */
 
 #delete-modal {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.35);
+
+    background: rgba(0, 0, 0, 0.35);
+
     justify-content: center;
     align-items: center;
+
     z-index: 9999;
 }
 
+/* modal box */
 .delete-box {
     background: #f9f9f9;
     padding: 20px;
     border-radius: 10px;
     width: 300px;
     text-align: center;
+
+    border: 1px solid #e0e0e0;
 }
 
-/* =====================
-   14. NOTIFICATIONS (KEEP THIS)
-===================== */
+/* icon container */
+.delete-icon {
+    width: 55px;
+    height: 55px;
+    margin: 0 auto 12px;
+
+    background: #fce8e6;
+    color: #e74c3c;
+
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 20px;
+}
+
+/* title */
+.delete-box h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* description */
+.delete-box p {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+/* buttons container */
+.delete-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* main delete button */
+.btn-delete-main {
+    width: 100%;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* cancel button */
+.btn-cancel {
+    width: 100%;
+    background: #f1f1f1;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* ================== notifikaacijass ======= */
 
 #notification-container {
     position: fixed;
     top: 20px;
     right: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
     z-index: 9999;
 }
 
 .notification {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
     padding: 10px 14px;
     border-radius: 6px;
+
+    font-size: 14px;
+    font-weight: 500;
+
     color: white;
+
+    min-width: 260px;
+
     animation: slideIn 0.25s ease;
 }
 
+/* SUCCESS */
 .notification.success {
     background: #2ecc71;
 }
 
+/* ERROR */
 .notification.error {
     background: #c0392b;
 }
 
-/* =====================
-   15. FOOTER
-===================== */
-
-footer {
-    background: var(--dark-1);
-    color: var(--light-1);
-    padding: 3rem 12%;
+/* icon */
+.notification i {
+    font-size: 14px;
 }
 
-/* =====================
-   16. RESPONSIVE
-===================== */
+/* animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
 
-@media (max-width: 768px){
-    header, section{
-        padding-inline: 5%;
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* hamburger menu */
+
+#hamburger-btn {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    nav {
+        display: block;
+        /* override desktop flex */
+    }
+
+    #hamburger-btn {
+        display: block;
+        font-size: 26px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin: 10px;
+    }
+
+    #admin-nav {
+    position: fixed;
+    top: -100%; /* hidden above screen */
+    left: 0;
+
+    width: 100%;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--dark-2);
+    padding: 20px 20px; /* extra top space for header */
+
+    transition: top 0.3s ease;
+    z-index: 1000;
+}
+
+    header nav {
+        display: block;
+        /* override desktop flex */
+    }
+
+    #admin-nav a {
+        display: block;
+        width: 100%;
+    }
+
+    #admin-nav.active {
+    top: 0; /* slides down */
+}
+
+    #admin-nav ul {
+        display: block;
+    }
+
+    #admin-nav li {
+        width: 100%;
     }
 }

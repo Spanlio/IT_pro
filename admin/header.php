@@ -20,15 +20,19 @@ if (!isset($_SESSION["lietotajvards_divisaldie"])) {
     <script src="aktualitates-admin.js" defer></script>
     <script src="pieteikumi-script.js?v=0.1" defer></script>
     <script src="lietotaji-script.js?v=0.1" defer></script>
+    <script src="hamburger.js?v=0.1" defer ></script>
     <script src="https://cdn.tiny.cloud/1/tsv590sdvai60jjhi74rhcqd8rqdf8h10ejly6yj133vo98d/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <header>
-        <a href="./" class="logo">
+        <a href="sakums.php" class="logo">
             <i class="fa fa-server"></i> IT atbalsts
         </a>
-        <nav>
+        <button id="hamburger-btn">
+            ☰
+        </button>
+        <nav id="admin-nav">
             <a href="sakums.php" class="btn">Sākums</a>
             <a href="pieteikumi.php" class="btn">Pieteikumi</a>
             <a href="pro.php" class="btn">PRO īpašnieki</a>

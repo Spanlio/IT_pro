@@ -1,4 +1,5 @@
 <?php
+
 header("Content-Type: application/json; charset=UTF-8");
 
 require "../../database/db_config.php";
@@ -21,7 +22,8 @@ if ($metode === 'GET') {
                 FROM IT_aktualitates a
                 LEFT JOIN IT_lietotaji u 
                 ON a.autors_id = u.lietotajs_id
-                WHERE a.id = $id";
+                WHERE a.id = $id
+                AND dzests != '1'";
 
         $rez = $savienojums->query($sql);
 
@@ -42,7 +44,7 @@ if ($metode === 'GET') {
             FROM IT_aktualitates a
             LEFT JOIN IT_lietotaji u 
             ON a.autors_id = u.lietotajs_id
-            WHERE a.statuss != 'dzests'
+            WHERE a.dzests != '1'
             ORDER BY a.izveidots DESC";
 
     $rez = $savienojums->query($sql);
@@ -182,7 +184,7 @@ if ($metode === 'DELETE') {
     }
 
     $sql = "UPDATE IT_aktualitates 
-            SET statuss = 'dzests' 
+            SET dzests = '1' 
             WHERE id = $id";
 
     if ($savienojums->query($sql)) {

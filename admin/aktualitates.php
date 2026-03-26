@@ -1,7 +1,7 @@
 <?php
     require "header.php"
 ?>
-
+<button id="addAktualitateBtn">+ Pievienot aktualitāti</button>
 <table id="aktualitates">
     <thead>
         <tr>
@@ -50,7 +50,7 @@
 
             </div>
 
-            <button type="submit" class="btn active">Saglabāt</button>
+            <button type="submit" class="btn active" id="aktButton">Saglabāt</button>
 
         </form>
     </div>
