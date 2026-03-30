@@ -13,7 +13,7 @@ session_start();
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
-    <script src="script.js?v=0.1" defer></script>
+    <script src="aktualitates.js?v=0.1" defer></script>
 </head>
 
 <body>
@@ -22,6 +22,7 @@ session_start();
             <i class="fa fa-server"></i> IT atbalsts
         </a>
         <nav>
+            <a href="aktualitates.php" class="btn" data-lang-key="nav_aktualitates">Aktualitātes</a>
             <a data-target="#modal-ticket" class="btn" data-lang-key="nav_ticket">Izveidot pieteikumu</a>
             <a data-target="#modal-pro" class="btn active" data-lang-key="nav_pro">Iegādāties PRO</a>
         </nav>
@@ -82,31 +83,8 @@ session_start();
 
     <section class="blog">
         <h1 data-lang-key="blog_title">IT nozares <span>aktualitātes</span></h1>
-        <div class="blog-container">
-            <div class="blog-card">
-                <img src="images/blog/blog-1.png">
-                <div class="blog-overlay">
-                    <h2 data-lang-key="blog_1_title">Kā pasargāt datoru no vīrusiem?</h2>
-                    <p data-lang-key="blog_1_desc">Prakstiski padomi drošākai interneta lietošanai.</p>
-                    <a href="#" class="btn" data-lang-key="blog_read_more">Lasīt vairāk</a>
-                </div>
-            </div>
-            <div class="blog-card">
-                <img src="images/blog/blog-2.png">
-                <div class="blog-overlay">
-                    <h2 data-lang-key="blog_2_title">Datora optimizācija dažos soļos</h2>
-                    <p data-lang-key="blog_2_desc">Kā paātrināt datoru bez maksas programmām.</p>
-                    <a href="#" class="btn" data-lang-key="blog_read_more">Lasīt vairāk</a>
-                </div>
-            </div>
-            <div class="blog-card">
-                <img src="images/blog/blog-3.png">
-                <div class="blog-overlay">
-                    <h2 data-lang-key="blog_3_title">Mājas WiFi drošība</h2>
-                    <p data-lang-key="blog_3_desc">Kā pareizi konfigurēt rūteri drošai lietošanai.</p>
-                    <a href="#" class="btn" data-lang-key="blog_read_more">Lasīt vairāk</a>
-                </div>
-            </div>
+        <div class="blog-container" id="aktualitates-container">
+            
         </div>
     </section>
 
