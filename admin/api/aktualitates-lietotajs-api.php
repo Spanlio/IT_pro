@@ -4,74 +4,127 @@ header("Content-Type: application/json; charset=UTF-8");
 require "../../database/db_config.php";
 
 if ($savienojums->connect_error) {
-    echo json_encode(["error" => "DB kļūda"]);
+    http_response_code(500);
+    echo json_encode(["error" => "Neizdevās pieslēgties datubāzei"]);
     exit;
 }
 
-// ===== GET =====
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+session_start();
 
-    // ===== SINGLE POST =====
+
+$metode = $_SERVER['REQUEST_METHOD'];
+
+// ================= GET =================
+if ($metode === 'GET') {
+
+    // 🔹 ONE aktualitate
     if (isset($_GET['id'])) {
+        $id = (int) $_GET['id'];
 
-        $id = (int)$_GET['id'];
-
-        $stmt = $savienojums->prepare("
-            SELECT * 
+        $sql = $savienojums->prepare("
+            SELECT *
             FROM IT_aktualitates
-            WHERE id = ? AND statuss = 'publicets'
-        ");
+            WHERE aktualitate_id=?");
+        $sql->bind_param("i", $id);
+        $sql->execute();
+        $rezultats = $sql->get_result();
 
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-
-        $result = $stmt->get_result();
-
-        if ($row = $result->fetch_assoc()) {
+        if ($row = $rezultats->fetch_assoc()) {
             echo json_encode($row);
         } else {
-            echo json_encode(["error" => "Nav atrasts"]);
+            http_response_code(404);
+            echo json_encode(["error" => "Aktualitāte nav atrasta"]);
         }
 
-        $stmt->close();
-        exit;
+        $sql->close();
     }
 
-    // ===== PARAMETERS =====
-    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 6;
-    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-    $search = isset($_GET['search']) ? $savienojums->real_escape_string($_GET['search']) : "";
+    // 🔹 HOMEPAGE (latest 3)
+    elseif (isset($_GET['latest'])) {
 
-    $offset = ($page - 1) * $limit;
 
-    // ===== QUERY =====
-    $sql = "
-        SELECT id, virsraksts, iss_apraksts, attels, izveidots
-        FROM IT_aktualitates
-        WHERE statuss = 'publicets'
-    ";
+        $rezultats = $savienojums->query("
+            SELECT * FROM IT_aktualitates 
+            WHERE statuss='publicets'
+            ORDER BY izveidots DESC 
+            LIMIT 3
+        ");
 
-    if ($search !== "") {
-        $sql .= "
-            AND (
-                virsraksts LIKE '%$search%' OR
-                iss_apraksts LIKE '%$search%' OR
-                pilns_apraksts LIKE '%$search%'
-            )
-        ";
+        $data = [];
+        while ($row = $rezultats->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        echo json_encode($data);
     }
 
-    $sql .= "
-        ORDER BY izveidots DESC
-        LIMIT $limit OFFSET $offset
-    ";
+    // 🔹 PAGINATION (same logic as your style)
+    elseif (isset($_GET['page'])) {
 
-    $result = $savienojums->query($sql);
+        $search = $_GET['search'] ?? '';
+        $limit = $_GET['limit'] ?? 12;
+        $page = $_GET['page'] ?? 1;
+        $offset = ($page - 1) * $limit;
 
-    $data = [];
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
+        $sql = "SELECT * FROM IT_aktualitates WHERE statuss = 'publicets'";
+
+        if (!empty($search)) {
+            $search = $savienojums->real_escape_string($search);
+            $sql .= " AND (
+        virsraksts LIKE '%$search%'
+        OR iss_apraksts LIKE '%$search%'
+        OR pilns_apraksts LIKE '%$search%'
+    )";
+        }
+
+        $sql .= " ORDER BY izveidots DESC LIMIT $limit OFFSET $offset";
+
+        $rezultats = $savienojums->query($sql);
+
+        $data = [];
+        while ($row = $rezultats->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        // 🔹 total count (same pattern, no prepare — like your GET all)
+        $count_sql = "SELECT COUNT(*) as total FROM IT_aktualitates WHERE statuss='publicets'";
+
+        if (!empty($search)) {
+            $count_sql .= " AND (
+        virsraksts LIKE '%$search%'
+        OR iss_apraksts LIKE '%$search%'
+        OR pilns_apraksts LIKE '%$search%'
+    )";
+        }
+
+        $count_result = $savienojums->query($count_sql);
+        $count_row = $count_result->fetch_assoc();
+
+        $total = $count_row['total'];
+        $totalPages = ceil($total / $limit);
+
+
+        echo json_encode([
+            "data" => $data,
+            "totalPages" => $totalPages,
+            "page" => (int)$page
+        ]);
+    } else {
+        $rezultats = $savienojums->query("
+            SELECT * FROM IT_aktualitates 
+            ORDER BY aktualitate_id DESC
+        ");
+
+        $data = [];
+        while ($row = $rezultats->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        echo json_encode($data);
     }
-
-    echo json_encode($data);
+} else {
+    http_response_code(405);
+    echo json_encode(["error" => "Metode nav atbalstīta"]);
 }
+
+$savienojums->close();

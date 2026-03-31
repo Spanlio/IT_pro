@@ -83,7 +83,7 @@ session_start();
 
     <section class="blog">
         <h1 data-lang-key="blog_title">IT nozares <span>aktualitātes</span></h1>
-        <div class="blog-container" id="aktualitates-container">
+        <div class="blog-container" id="aktualitates-container-home">
             
         </div>
     </section>
