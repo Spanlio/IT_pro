@@ -60,6 +60,7 @@ async function loadPosts({
         }
 
         posts.forEach(post => {
+            console.log(post);
             const div = document.createElement("div");
             div.classList.add("blog-card");
 
@@ -68,7 +69,7 @@ async function loadPosts({
                 <div class="blog-overlay">
                     <h2>${post.virsraksts}</h2>
                     <p>${post.iss_apraksts}</p>
-                    <a href="aktualitate.php?id=${post.aktualitate_id}" class="btn">
+                    <a href="raksts.php?id=${post.id}" class="btn">
                         Lasīt vairāk
                     </a>
                 </div>

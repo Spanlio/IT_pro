@@ -1,53 +1,44 @@
-// 1. Get ID from URL
+const container = document.querySelector("#raksts-container");
+
+// 1. Get ID
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
 // 2. Validate
 if (!id) {
-    document.querySelector("#raksts-container").innerHTML = "Raksts nav atrasts";
+    container.innerHTML = "Raksts nav atrasts";
 } else {
-    loadPost(id);
-}
-
-// 3. Fetch post
-function loadPost(id) {
-    fetch(`/admin/api/aktualitates-lietotajs-api.php?id=${id}`)
+    fetch(`admin/api/aktualitates-lietotajs-api.php?id=${id}`)
         .then(res => res.json())
-        .then(data => {
-            if (!data || data.error) {
-                showError();
-            } else {
-                renderPost(data);
+        .then(post => {
+            if (!post || post.error) {
+                container.innerHTML = "Raksts nav atrasts";
+                return;
             }
+
+            renderPost(post);
         })
-        .catch(() => showError());
+        .catch(() => {
+            container.innerHTML = "Kļūda ielādējot rakstu";
+        });
 }
 
-// 4. Render
+// 3. Render
 function renderPost(post) {
-    const container = document.querySelector("#raksts-container");
-
     container.innerHTML = `
         <h1>${post.virsraksts}</h1>
 
-        <img src="${post.attels}" class="raksts-img">
+        <img src="uploaded_files/${post.attels}" class="raksts-img">
 
         <div class="meta">
-            <span>Autors: ${post.autors}</span>
-            <span>Publicēts: ${post.izveidots}</span>
+            <span><b>Autors:</b> ${post.autors}</span>
+            <span><b>Publicēts:</b> ${post.izveidots}</span>
         </div>
 
         <div class="content">
             ${post.pilns_apraksts}
         </div>
 
-        <a href="aktualitates.php" class="back-btn">
-            ← Atpakaļ uz aktualitātēm
-        </a>
+        <a href="aktualitates.php">← Atpakaļ</a>
     `;
-}
-
-// 5. Error UI
-function showError() {
-    document.querySelector("#raksts-container").innerHTML = "Raksts nav atrasts";
 }

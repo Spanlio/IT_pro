@@ -1,5 +1,4 @@
 <?php
-
 header("Content-Type: application/json; charset=UTF-8");
 
 require "../../database/db_config.php";
@@ -65,6 +64,11 @@ if ($metode === 'GET') {
 // =====================
 if ($metode === 'POST') {
 
+echo json_encode([
+        "files" => $_FILES
+    ]);
+    exit;
+    
     // ===== DATA =====
     $id = $_POST['id'] ?? null;
     $virsraksts = $_POST['virsraksts'] ?? '';
@@ -87,6 +91,7 @@ if ($metode === 'POST') {
     if (isset($_FILES['attels']) && $_FILES['attels']['error'] === 0) {
 
         $file = $_FILES['attels'];
+
 
         $allowed = ['image/jpeg', 'image/png', 'image/jpg'];
 

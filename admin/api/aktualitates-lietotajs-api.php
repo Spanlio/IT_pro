@@ -22,11 +22,24 @@ if ($metode === 'GET') {
         $id = (int) $_GET['id'];
 
         $sql = $savienojums->prepare("
-            SELECT *
-            FROM IT_aktualitates
-            WHERE aktualitate_id=?");
+        SELECT 
+            a.id,
+            a.virsraksts,
+            a.iss_apraksts,
+            a.pilns_apraksts,
+            a.attels,
+            a.izveidots,
+            a.redigets,
+            CONCAT(l.vards, ' ', l.uzvards) AS autors
+        FROM IT_aktualitates a
+        LEFT JOIN IT_lietotaji l ON a.autors_id = l.lietotajs_id
+        WHERE a.id = ? 
+        AND a.statuss = 'publicets'
+    ");
+
         $sql->bind_param("i", $id);
         $sql->execute();
+
         $rezultats = $sql->get_result();
 
         if ($row = $rezultats->fetch_assoc()) {
@@ -37,6 +50,7 @@ if ($metode === 'GET') {
         }
 
         $sql->close();
+        exit;
     }
 
     // 🔹 HOMEPAGE (latest 3)
