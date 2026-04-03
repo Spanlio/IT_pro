@@ -17,9 +17,18 @@ session_start();
 </head>
 
 <body>
+    <header>
+        <a href="index.php" class="logo">
+            <i class="fa fa-server"></i> IT atbalsts
+        </a>
+        <nav>
+            <a href="index.php" class="btn">Mājas</a>
+        </nav>
+    </header>
+    
     <div class="container">
-    <div id="raksts-container"></div>
-</div>
+        <div id="raksts-container"></div>
+    </div>
 
-<script src="raksts.js"></script>
+    <script src="raksts.js"></script>
 </body>

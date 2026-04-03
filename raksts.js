@@ -25,20 +25,28 @@ if (!id) {
 
 // 3. Render
 function renderPost(post) {
+    const BASE_URL = "/2023/markovs/it-support-cirkel/";
+
     container.innerHTML = `
-        <h1>${post.virsraksts}</h1>
+        <div class="raksts-wrapper">
+            
+            <a href="aktualitates.php" class="back-btn">← Atpakaļ</a>
 
-        <img src="uploaded_files/${post.attels}" class="raksts-img">
+            <h1 class="raksts-title">${post.virsraksts}</h1>
 
-        <div class="meta">
-            <span><b>Autors:</b> ${post.autors}</span>
-            <span><b>Publicēts:</b> ${post.izveidots}</span>
+            <div class="raksts-meta">
+                <span>${post.autors}</span>
+                <span>${post.izveidots}</span>
+            </div>
+
+            <div class="raksts-image">
+                <img src="${BASE_URL}uploaded_files/${post.attels}" alt="">
+            </div>
+
+            <div class="raksts-content">
+                ${post.pilns_apraksts}
+            </div>
+
         </div>
-
-        <div class="content">
-            ${post.pilns_apraksts}
-        </div>
-
-        <a href="aktualitates.php">← Atpakaļ</a>
     `;
 }

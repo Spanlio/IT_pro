@@ -31,7 +31,7 @@ if (!aktualitatesTabula) {
                     <td>${a.virsraksts}</td>
                     
                     <td>
-                        <img src="${a.attels ? '../' + a.attels : '../images/no-image.png'}"
+                        <img src="${a.attels ? '../uploaded_files/' + a.attels : '../images/no-image.png'}"
                              style="width:80px; height:50px; object-fit:cover;">
                     </td>
 
@@ -86,6 +86,7 @@ if (!aktualitatesTabula) {
             document.querySelector("#virsraksts").value = aktualitate.virsraksts;
             document.querySelector("#iss_apraksts").value = aktualitate.iss_apraksts;
             document.querySelector("#statuss").value = aktualitate.statuss;
+            // document.querySelector("#pilns_apraksts").value
 
             showModal(aktualitate.pilns_apraksts);
 
@@ -152,13 +153,17 @@ if (!aktualitatesTabula) {
     document.querySelector("#aktualitatesForma").addEventListener("submit", async function (e) {
         e.preventDefault();
 
+        tinymce.triggerSave();
+
         if (isSubmitting) return;
         isSubmitting = true;
 
         const btn = this.querySelector("button[type='submit']");
         if (btn) btn.disabled = true;
 
-        let pilns = tinymce.get("pilns_apraksts").getContent();
+        tinymce.triggerSave();
+
+        let pilns = document.querySelector("#pilns_apraksts").value;
 
         let aktualitate = new FormData();
         aktualitate.append("id", document.querySelector("#aktualitate_id").value);
@@ -193,7 +198,6 @@ if (!aktualitatesTabula) {
 
             hideModal();
             this.reset();
-            tinymce.get("pilns_apraksts")?.setContent("");
 
             showNotification(data.message, data.status);
 
@@ -233,20 +237,18 @@ if (!aktualitatesTabula) {
             tinymce.get("pilns_apraksts").remove();
         }
 
-        setTimeout(() => {
-            tinymce.init({
-                selector: "#pilns_apraksts",
-                height: 300,
-                menubar: false,
-                plugins: ["lists", "link", "code"],
-                toolbar: "undo redo | bold italic | bullist numlist | link",
-                setup: function (editor) {
-                    editor.on("init", function () {
-                        editor.setContent(content || "");
-                    });
-                }
-            });
-        }, 50);
+        tinymce.init({
+            selector: "#pilns_apraksts",
+            height: 300,
+            menubar: false,
+            plugins: ["lists", "link", "code"],
+            toolbar: "undo redo | bold italic | bullist numlist | link",
+            setup: function (editor) {
+                editor.on("init", function () {
+                    editor.setContent(content || "");
+                });
+            }
+        });
     }
 
     function hideModal() {

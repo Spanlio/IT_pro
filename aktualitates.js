@@ -65,7 +65,7 @@ async function loadPosts({
             div.classList.add("blog-card");
 
             div.innerHTML = `
-                <img src="${post.attels}">
+                <img src="/2023/markovs/it-support-cirkel/uploaded_files/${post.attels}">
                 <div class="blog-overlay">
                     <h2>${post.virsraksts}</h2>
                     <p>${post.iss_apraksts}</p>

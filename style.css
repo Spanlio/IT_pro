@@ -1245,6 +1245,84 @@ button {
     }
 
     #admin-nav li {
+        text-align: center;
         width: 100%;
     }
+}
+
+/* raksts */
+
+/* WRAPPER */
+.raksts-wrapper {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 0 20px;
+    font-family: system-ui, sans-serif;
+}
+
+/* BACK BUTTON */
+.back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: #666;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    color: #000;
+}
+
+/* TITLE */
+.raksts-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+/* META */
+.raksts-meta {
+    display: flex;
+    gap: 20px;
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* IMAGE */
+.raksts-image img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    object-fit: cover;
+}
+
+/* CONTENT */
+.raksts-content {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #222;
+}
+
+/* CONTENT FORMATTING (important for WYSIWYG) */
+.raksts-content h2 {
+    margin-top: 30px;
+    font-size: 24px;
+}
+
+.raksts-content p {
+    margin-bottom: 15px;
+}
+
+.raksts-content ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.raksts-content img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin: 20px 0;
 }

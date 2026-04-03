@@ -64,11 +64,6 @@ if ($metode === 'GET') {
 // =====================
 if ($metode === 'POST') {
 
-echo json_encode([
-        "files" => $_FILES
-    ]);
-    exit;
-    
     // ===== DATA =====
     $id = $_POST['id'] ?? null;
     $virsraksts = $_POST['virsraksts'] ?? '';
@@ -115,7 +110,15 @@ echo json_encode([
         $filename = time() . "_" . basename($file['name']);
 
         if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
-            $attels = "uploaded_files/" . $filename;
+            $attels = $filename; // <-- FIX HERE
+        } else {
+            echo json_encode([
+                "status" => "error",
+                "message" => "UPLOAD FAILED",
+                "tmp" => $file['tmp_name'],
+                "target" => $uploadDir . $filename
+            ]);
+            exit;
         }
     }
 
